@@ -1,0 +1,37 @@
+.TaskProjectContainer {
+  display: flex;
+  justify-content: center;
+}
+.itemTask {
+  border-radius: 10px;
+  width: 50%;
+  margin: 10px;
+  background-color: gray;
+  text-align: center;
+  cursor: pointer;
+  .taskContent {
+    border-radius: 10px;
+    margin: 15px;
+    background-color: white;
+    p {
+      padding: 10px;
+      margin: 0;
+      text-align: left;
+    }
+  }
+}
+.containerComment {
+  overflow: scroll;
+  overflow-x: hidden;
+  max-height: 168px;
+  margin-top: 10px;
+  .row {
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    p {
+      margin: 0;
+    }
+  }
+}

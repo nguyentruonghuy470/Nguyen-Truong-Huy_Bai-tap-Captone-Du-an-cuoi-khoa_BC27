@@ -1,0 +1,114 @@
+.login {
+}
+
+.loginContainer {
+  width: 100%;
+  background: #fff;
+  overflow: hidden;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  flex-direction: row;
+  .loginImg {
+    height: 100vh;
+    width: calc(100% - 560px);
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    z-index: 1;
+    img {
+      width: 100%;
+      height: 100%;
+    }
+  }
+  .formContainer {
+    width: 560px;
+    min-height: 100vh;
+    display: block;
+    background-color: #f7f7f7;
+    padding: 125px 55px 55px;
+    .input {
+      width: 100%;
+    }
+    .iconUserLogin {
+      text-align: center;
+    }
+    .chkSavePass {
+      padding: 20px 0;
+    }
+    .btnLogin {
+      Button {
+        width: 100%;
+      }
+    }
+    .containerBrands {
+      display: flex;
+      flex-direction: row;
+      justify-content: center;
+      gap: 10px;
+    }
+  }
+}
+.register {
+  background: #f8f9fd;
+  color: gray;
+  height: 100vh;
+  .containerRegister {
+    padding: 75px 0;
+    .wrap {
+      width: 100%;
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      border-radius: 5px;
+      box-shadow: 0 10px 34px -15px rgb(0 0 0 / 24%);
+      .imgRegister {
+        padding: 48px;
+        position: relative;
+        z-index: 0;
+        width: 40%;
+        background-image: url("https://preview.colorlib.com/theme/bootstrap/signup-form-16/images/bg.jpg.webp");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        .titleRegister {
+          color: rgba(255, 255, 255, 0.8);
+          width: 100%;
+          h4 {
+            font-weight: 700;
+            color: #fff;
+            font-size: 20px;
+          }
+          p {
+            font-size: 16px;
+            font-weight: 400;
+          }
+        }
+        .titleRegister:after {
+          background: #6807f9;
+          position: absolute;
+          top: 0;
+          left: 0;
+          right: 0;
+          bottom: 0;
+          content: "";
+          opacity: 0.4;
+          z-index: -1;
+        }
+      }
+      .formRegister {
+        position: relative;
+        background: #fff;
+        padding: 3rem;
+        width: 60%;
+        .containerFormRegister {
+          display: flex;
+          flex-direction: column;
+          justify-content: center;
+          gap: 10px;
+        }
+      }
+    }
+  }
+}

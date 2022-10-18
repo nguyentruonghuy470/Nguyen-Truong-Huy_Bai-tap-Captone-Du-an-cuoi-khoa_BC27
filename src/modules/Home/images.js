@@ -1,0 +1,1 @@
+export { default as image1 } from "./img/download.jpeg"

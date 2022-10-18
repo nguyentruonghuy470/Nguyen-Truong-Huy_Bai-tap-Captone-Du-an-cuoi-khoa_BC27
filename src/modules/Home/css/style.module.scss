@@ -1,0 +1,206 @@
+.containerManagement {
+  display: flex;
+  height: 100;
+  position: relative;
+  .iconUser {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    svg {
+      font-size: 26px;
+    }
+  }
+  .projectTask {
+    background-color: #dddddd;
+    width: 20%;
+    padding: 20px;
+    .projectTitle {
+      display: flex;
+      align-items: center;
+      margin: 20px 0;
+      .imgIcon {
+        margin-right: 5px;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+      }
+    }
+    .projectFunction {
+      padding-bottom: 15px;
+      border-bottom: 3px solid #9e9e9e;
+      span {
+        margin-left: 10px;
+      }
+    }
+  }
+  .projectManagement {
+    background-color: #cccccc;
+    width: 100%;
+    .containerProjectManagement {
+      margin: 40px 0px 40px 40px;
+      .grid {
+        background-color: #ffffff;
+      }
+      .members:hover .infoMember {
+        display: block;
+      }
+      .members {
+        position: relative;
+        :hover {
+          cursor: pointer;
+        }
+        .infoMember {
+          border-radius: 10px;
+          z-index: 99;
+          background-color: #ffffff;
+          position: absolute;
+          display: none;
+          table {
+            td {
+              border-bottom-width: 0;
+            }
+            margin: 0;
+            .userId {
+              border: 0;
+              align-items: center;
+              height: 40px;
+              padding-left: 2px;
+              display: flex;
+            }
+            .avatarUser {
+              padding: 0;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              img {
+                border: none;
+                padding: 2px;
+                height: 40px;
+                border-radius: 50px;
+              }
+            }
+            .name {
+              display: flex;
+              flex-wrap: nowrap;
+            }
+            p {
+              margin: 0;
+            }
+          }
+        }
+        height: 35px;
+        display: flex;
+        column-gap: 7px;
+        align-items: center;
+        .containerMember {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          img {
+            width: 100%;
+            height: 30px;
+            border-radius: 20px;
+            width: 100%;
+          }
+        }
+      }
+      .containerTextUser {
+        padding: 10px;
+        font-weight: 700;
+        border-bottom: 1px solid #11101d;
+      }
+      .containerAddUser {
+        overflow: scroll;
+        overflow-x: hidden;
+        max-height: 168px;
+        border-radius: 0px 5px 5px 5px;
+        div:hover {
+          p {
+            cursor: pointer;
+            background-color: #cccccc;
+          }
+        }
+        div {
+          p {
+            padding: 10px;
+            margin: 0;
+          }
+        }
+      }
+      .projectManagementButton {
+        display: flex;
+        align-items: center;
+        height: 70px;
+      }
+    }
+  }
+}
+.menu {
+  background-color: #000033;
+  width: 20%;
+  height: 100%;
+}
+
+.sidebar {
+  width: 78px;
+  background: #11101d;
+  padding: 6px 10px;
+  z-index: 99;
+  transition: all 0.5s ease;
+  .example1:hover {
+    svg {
+      color: #11191d;
+    }
+    border-radius: 12px;
+    background-color: #9e9e9e;
+  }
+  .example1 {
+    margin: 15px 0;
+    min-width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 0;
+
+    span {
+      display: none;
+      pointer-events: none;
+    }
+    svg {
+      font-size: 25px;
+    }
+  }
+}
+.sidebaropen {
+  .iconUser {
+    display: flex;
+    align-items: center;
+    justify-content: end;
+  }
+  .tooltip {
+    color: black;
+  }
+  .example1 {
+    flex-wrap: nowrap;
+    display: flex;
+    align-items: center;
+    padding: 10px 0;
+    transition: 0.4s;
+    svg {
+      margin-right: 7px;
+    }
+  }
+  transition: all 0.5s ease;
+  padding: 6px 14px;
+  background: #11101d;
+  width: 240px;
+}
+.createProject {
+  padding: 20px 40px;
+  .controlCreateProject {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+}

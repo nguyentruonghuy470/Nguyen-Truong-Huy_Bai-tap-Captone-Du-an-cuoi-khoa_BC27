@@ -1,0 +1,18 @@
+.createTask {
+  width: 40%;
+  padding: 20px 40px;
+
+  h4 {
+    border-bottom: 1px solid 000033;
+  }
+  .controlcreateTask {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 15px;
+  }
+  .containerPriorityandType {
+    display: flex;
+    justify-content: space-between;
+  }
+}
