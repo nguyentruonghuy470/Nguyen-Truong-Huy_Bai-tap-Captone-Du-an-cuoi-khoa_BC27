@@ -10,10 +10,10 @@ import { getAllComment, getProjectAllById } from "../slices/taskSlices";
 
 import { useNavigate, useParams } from "react-router-dom";
 
+import { removeTaskz } from "../slices/taskSlices";
 const TaskProject = ({ projectId }) => {
   const [openModalTask, setOpenModalTask] = React.useState(false);
   const handleClose = () => setOpenModalTask(false);
-
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,11 +24,7 @@ const TaskProject = ({ projectId }) => {
     dispatch({ type: "location", cinemaCode });
     dispatch({ type: "getTaskId", idTask });
   };
-  // const {
-  //   data: infoProjectTask,
-  //   isLoading,
-  //   error,
-  // } = useRequest(() => projectAPI.getProjectAllById(projectId));
+
   const user = JSON.parse(localStorage.getItem("user"));
 
   const { data1: tasks, comment } = useSelector((state) => state.taskS);
@@ -36,6 +32,9 @@ const TaskProject = ({ projectId }) => {
     dispatch(getProjectAllById({ projectId }));
   }, [tasks]);
 
+  const handleDelete = (projectId, taskId, acce) => {
+    dispatch(removeTaskz({ projectId, taskId, acce }));
+  };
   return (
     <div>
       <h1>{tasks?.projectName}</h1>
@@ -47,11 +46,7 @@ const TaskProject = ({ projectId }) => {
                 <p style={{ fontWeight: 500 }}>{i.statusName}</p>
                 {i.lstTaskDeTail.map((task) => {
                   return (
-                    <div
-                      className={SCSS.taskContent}
-                      key={task.taskId}
-                      onClick={() => handleCinema(task, task.taskId)}
-                    >
+                    <div className={SCSS.taskContent} key={task.taskId}>
                       <p>
                         <b>Task Name:</b> {task.taskName}
                       </p>
@@ -61,6 +56,27 @@ const TaskProject = ({ projectId }) => {
                       <p>
                         <b>Task Type:</b> {task.taskTypeDetail.taskType}
                       </p>
+                      <div className="d-flex justify-content-end ">
+                        <button
+                          type="button"
+                          className="btn btn-primary m-2"
+                          onClick={() => handleCinema(task, task.taskId)}
+                        >
+                          Detail
+                        </button>
+                        <button
+                          className="btn btn-danger m-2"
+                          onClick={() =>
+                            handleDelete(
+                              projectId,
+                              task.taskId,
+                              user.accessToken
+                            )
+                          }
+                        >
+                          X
+                        </button>
+                      </div>
                     </div>
                   );
                 })}

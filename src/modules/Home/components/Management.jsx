@@ -30,6 +30,7 @@ import { useNavigate, Navigate } from "react-router-dom";
 import {
   assignUserProject,
   getProjectAll,
+  deleteProject,
 } from "modules/ProjectDetail/slices/projectSlices";
 
 import { logout } from "modules/Authentication/slices/authSlice";
@@ -110,6 +111,9 @@ const Management = () => {
         buttons: "Ok",
       });
     }
+  };
+  const handleDelete = (projectId, acces) => {
+    dispatch(deleteProject({ projectId, acces }));
   };
 
   const handleGetProductId = (id) => {
@@ -408,7 +412,9 @@ const Management = () => {
                       </button>
                       <button
                         className="btn btn-danger"
-                        onClick={() => submitDeleteProject(product.id)}
+                        onClick={() =>
+                          handleDelete(product.id, user.accessToken)
+                        }
                       >
                         Remove
                       </button>

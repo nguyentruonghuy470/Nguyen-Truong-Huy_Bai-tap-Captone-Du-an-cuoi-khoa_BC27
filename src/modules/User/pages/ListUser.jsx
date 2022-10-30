@@ -26,7 +26,7 @@ const ListUser = () => {
 
   const { users } = useSelector((state) => state.user);
   const dispatch = useDispatch();
-  console.log(users);
+  
   const userz = JSON.parse(localStorage.getItem("user"));
   useEffect(() => {
     dispatch(getAllUser());

@@ -35,9 +35,17 @@ const projectAPI = {
   getProjectCategory: () => {
     return axiosClient.get(`ProjectCategory`);
   },
-  deleteProject: (id) => {
-    return axiosClient.delete(`Project/deleteProject?projectId=${id}`);
+  deleteProject: (projectId, acces) => {
+    return axiosClient.delete("Project/deleteProject", {
+      headers: {
+        Authorization: `Bearer ${acces}`,
+      },
+      params: {
+        projectId: projectId,
+      },
+    });
   },
+  
   addUserForProject: (values, acces) => {
     return axiosClient.post(`Project/assignUserProject`, values, {
       headers: {
@@ -57,6 +65,16 @@ const projectAPI = {
   createTask: (values) => {
     console.log(values);
     return axiosClient.post(`${domain}/Project/createTask`, values);
+  },
+  removeTask: (taskId, acces) => {
+    return axiosClient.delete("Project/removeTask", {
+      headers: {
+        Authorization: `Bearer ${acces}`,
+      },
+      params: {
+        taskId: taskId,
+      },
+    });
   },
   updateTasks: (values, acces) => {
     return axiosClient.post(`${domain}/Project/updateTask`, values, {

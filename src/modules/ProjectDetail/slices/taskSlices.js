@@ -60,19 +60,19 @@ export const getAlltas = createAsyncThunk(
   }
 );
 
-// export const removeTask = createAsyncThunk(
-//   "task/removetask",
-//   async (title, { rejectWithValue, dispatch }) => {
-//     console.log(title);
-//     try {
-//       const data = await taskAPI.removeTask(title.taskIds, title.acce);
-//       dispatch(getProjectDetails({ taskId: title.taskId, acces: title.acce }));
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
+export const removeTaskz = createAsyncThunk(
+  "task/removetask",
+  async (title, { rejectWithValue, dispatch }) => {
+    console.log(title);
+    try {
+      const data = await projectAPI.removeTask(title.taskId, title.acce);
+      dispatch(getProjectAllById({ taskId: title.projectId, acces: title.acce }));
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 export const getTaskDetail = createAsyncThunk(
   "task/getTaskDetail",
