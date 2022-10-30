@@ -12,6 +12,10 @@ import MainLayout from "components/MainLayout";
 import CreateProject from "modules/Home/components/CreateProject";
 import Task from "modules/Task/pages/Task";
 import ProjectDetail from "modules/ProjectDetail/Page/ProjectDetail";
+import ListUser from "modules/User/pages/ListUser";
+import CreateUser from "modules/User/pages/CreateUser";
+import UpdateUser from "modules/User/pages/UpdateUser";
+import UpdateTask from "modules/ProjectDetail/Components/UpdateTask";
 // const Login = lazy(() => import("modules/Authentication/Pages/Login"));
 
 function App() {
@@ -22,8 +26,14 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="/createProject" element={<CreateProject />} />
-            <Route path="/projectDetail/:projectId" element={<ProjectDetail />} />
+            <Route
+              path="/projectDetail/:projectId"
+              element={<ProjectDetail />}
+            />
             <Route path="/task" element={<Task />} />
+            <Route path="/user" element={<ListUser />} />
+            <Route path="/createuser" element={<CreateUser />} />
+            <Route path="/user/:userId" element={<UpdateUser />} />
           </Route>
           <Route path="/" element={<AuthLayout />}>
             <Route path="login" element={<Login />} />

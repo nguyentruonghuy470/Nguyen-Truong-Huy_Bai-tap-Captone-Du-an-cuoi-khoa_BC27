@@ -26,26 +26,30 @@ import {
   updateComment,
 } from "../slices/taskSlices";
 import Comment from "./Comment";
+import { Update } from "@mui/icons-material";
+import UpdateTask from "./UpdateTask";
 const ModalTask = ({ handleClose, openModalTask }) => {
   const user = JSON.parse(localStorage.getItem("user"));
   const acces = user.accessToken;
 
-  const [taskId, setTaskId] = useState(5610);
-  const { data1: tasks, comment } = useSelector((state) => state.taskS);
+  const [taskId, setTaskId] = useState("");
+  const { comment } = useSelector((state) => state.taskS);
   const { dataTaskDetail } = useSelector((state) => state.task);
+
   const [activeComment, setActiveComment] = useState(null);
 
   const dispatch = useDispatch();
 
-  const {
-    data: infoProjectTask,
-    isLoading,
-    error,
-  } = useRequest(() => projectAPI.getComment(taskId), {
-    isManual: false,
-    deps: [taskId],
-  });
+  // const {
+  //   data: infoProjectTask,
+  //   isLoading,
+  //   error,
+  // } = useRequest(() => projectAPI.getComment(taskId), {
+  //   isManual: false,
+  //   deps: [taskId],
+  // });
   // console.log(infoProjectTask);
+  // console.log(tasks);
 
   const style = {
     position: "absolute",
@@ -79,7 +83,7 @@ const ModalTask = ({ handleClose, openModalTask }) => {
       Object.entries(dataTaskDetail).forEach(([name, value]) =>
         setValue(name, value)
       );
-      // setTaskId(dataTaskDetail?.taskId);
+      setTaskId(dataTaskDetail?.taskId);
     }
   }, [setValue, dataTaskDetail]);
 
@@ -109,9 +113,6 @@ const ModalTask = ({ handleClose, openModalTask }) => {
     }
   };
 
-  const objectKeys = Object.values(infoProjectTask || []);
-  // console.log(typeof objectKeys);
-  // console.log(comment.id);
   return (
     <div>
       <Modal
@@ -192,7 +193,6 @@ const ModalTask = ({ handleClose, openModalTask }) => {
                           comment={i}
                           activeComment={activeComment}
                           setActiveComment={setActiveComment}
-                         
                         />
                         <div className="col-sm-6 d-flex justify-content-center">
                           <button
@@ -221,12 +221,7 @@ const ModalTask = ({ handleClose, openModalTask }) => {
                   })}
                 </div>
               </div>
-              <div className="w-50 m-2">
-                <h5>STATUS</h5>
-                <h5>ASSIGNEES</h5>
-                <h5>PRIORITY</h5>
-                <h5>ORIGINAL ESTIMATE (HOURS)</h5>
-              </div>
+              <UpdateTask handleClose={handleClose} />
             </div>
           </Box>
         </Fade>

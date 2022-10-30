@@ -1,31 +1,45 @@
-import React from "react";
+import React, { useEffect } from "react";
 import useRequest from "hooks/useRequest";
 import userAPI from "apis/userAPI";
 
 import Swal from "sweetalert2";
 
 import SCSS from "../css/style.module.scss";
-const InforUser = ({setid}) => {
-  const {
-    data: infoUser,
-    isLoading,
-    error,
-  } = useRequest(() => userAPI.getUserByProjectId(setid));
-  const { data: handleRegister } = useRequest(
-    (id) => userAPI.deleteProject(id),
-    { isManual: true }
-  );
-  const handleDeleteProject = async (id) => {
+
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
+
+import {
+  getUserByProjectId,
+  removeUserz,
+} from "modules/ProjectDetail/slices/projectSlices";
+
+const InforUser = ({ setid }) => {
+  const dispatch = useDispatch();
+  const user = JSON.parse(localStorage.getItem("user"));
+  const acces = user.accessToken;
+  const { data: inforUser } = useSelector((state) => state.project);
+  useEffect(() => {
+    dispatch(getUserByProjectId({ setid, acces }));
+  }, [inforUser]);
+  // const { data: handleRegister } = useRequest(
+  //   (id) => userAPI.deleteProject(id),
+  //   { isManual: true }
+  // );
+  // const removeUser = (projectId, userId) => {
+  
+  //   dispatch(removeUserz({ values: { projectId, userId }, acces }));
+  // };
+  const handleDeleteProject = async (projectId, userId ) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const acces = user.accessToken;
     try {
-      await handleRegister(id);
+      await dispatch(removeUserz({ values: { projectId, userId }, acces }));
       Swal.fire({
         icon: "success",
         title: "Xóa thành công",
         buttons: "Ok",
       });
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
     } catch (error) {
       Swal.fire({
         text: error,
@@ -46,35 +60,36 @@ const InforUser = ({setid}) => {
         </tr>
       </thead>
 
-      {infoUser?.map((i) => {
-        return (
-          <tbody key={i.userId}>
-            <tr>
-              <td>
-                <div className={SCSS.userId}>{i.userId}</div>
-              </td>
-              <td>
-                <div className={SCSS.avatarUser}>
-                  <img src={i.avatar} />
-                </div>
-              </td>
-              <td>
-                <p>{i.name}</p>
-              </td>
-              <td>
-                <div>
-                  <button
-                    className="btn btn-danger"
-                    onClick={() => handleDeleteProject(i.userId)}
-                  >
-                    Remove
-                  </button>
-                </div>
-              </td>
-            </tr>
-          </tbody>
-        );
-      })}
+      {inforUser?.map((i) => (
+        <tbody key={i.id}>
+          {i.id === setid &&
+            i.members.map((user) => (
+              <tr key={user.userId}>
+                <td>
+                  <div className={SCSS.userId}>{user.userId}</div>
+                </td>
+                <td>
+                  <div className={SCSS.avatarUser}>
+                    <img src={user.avatar} />
+                  </div>
+                </td>
+                <td>
+                  <p>{user.name}</p>
+                </td>
+                <td>
+                  <div>
+                    <button
+                      className="btn btn-danger"
+                      onClick={() => handleDeleteProject(i.id, user.userId)}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                </td>
+              </tr>
+            ))}
+        </tbody>
+      ))}
     </table>
   );
 };

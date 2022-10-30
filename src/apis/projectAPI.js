@@ -2,16 +2,32 @@ import axiosClient from "./axiosClient";
 import { domain } from "../config/setting";
 
 const projectAPI = {
-  getProjectAll: () => {
-    return axiosClient.get("Project/getAllProject");
+  getProjectAll: (acces) => {
+    return axiosClient.get("Project/getAllProject", {
+      headers: {
+        Authorization: `Bearer ${acces}`,
+      },
+    });
   },
-  getProjectAllById: (movieId) => {
-    console.log(movieId);
-    return axiosClient.get(`${domain}/Project/getProjectDetail?id=${movieId}`);
+  getProjectAllById: (Id, acces) => {
+    return axiosClient.get("Project/getProjectDetail", {
+      headers: {
+        Authorization: `Bearer ${acces}`,
+      },
+      params: {
+        id: Id,
+      },
+    });
   },
-  updateProjectById: (values) => {
-    console.log(values);
-    return axiosClient.put(`Project/updateProject?projectId=${7604}`, values);
+  updateProjectById: (values, projectId, acces) => {
+    return axiosClient.put("Project/updateProject", values, {
+      headers: {
+        Authorization: `Bearer ${acces}`,
+      },
+      params: {
+        projectId: projectId,
+      },
+    });
   },
   addProject: (values) => {
     return axiosClient.post(`Project/createProjectAuthorize`, values);
@@ -22,9 +38,12 @@ const projectAPI = {
   deleteProject: (id) => {
     return axiosClient.delete(`Project/deleteProject?projectId=${id}`);
   },
-  addUserForProject: (values) => {
-    console.log(values);
-    return axiosClient.post(`Project/assignUserProject`, values);
+  addUserForProject: (values, acces) => {
+    return axiosClient.post(`Project/assignUserProject`, values, {
+      headers: {
+        Authorization: `Bearer ${acces}`,
+      },
+    });
   },
   getStatus: () => {
     return axiosClient.get(`Status/getAll`);
@@ -38,6 +57,23 @@ const projectAPI = {
   createTask: (values) => {
     console.log(values);
     return axiosClient.post(`${domain}/Project/createTask`, values);
+  },
+  updateTasks: (values, acces) => {
+    return axiosClient.post(`${domain}/Project/updateTask`, values, {
+      headers: {
+        Authorization: `Bearer ${acces}`,
+      },
+    });
+  },
+  getTaskDetail: (taskId, acces) => {
+    return axiosClient.get("Project/getTaskDetail", {
+      headers: {
+        Authorization: `Bearer ${acces}`,
+      },
+      params: {
+        taskId: taskId,
+      },
+    });
   },
   addComment: (values, acces) => {
     return axiosClient.post(`Comment/insertComment`, values, {

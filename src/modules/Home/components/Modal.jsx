@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Dialog, { DialogProps } from "@mui/material/Dialog";
@@ -6,12 +7,16 @@ import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+
 import FormControl from "@mui/material/FormControl";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import InputLabel from "@mui/material/InputLabel";
 import MenuItem from "@mui/material/MenuItem";
 import TextField from "@mui/material/TextField";
+import Select from "@mui/material/Select";
 
+import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import useRequest from "hooks/useRequest";
 import projectAPI from "apis/projectAPI";
 
@@ -19,16 +24,30 @@ import { Form, notification } from "antd";
 import { useForm, Controller } from "react-hook-form";
 
 import Swal from "sweetalert2";
+import {
+  getProjectAllById,
+  getProjectCategory,
+  updateProjectById,
+} from "modules/ProjectDetail/slices/projectSlices";
+const Modal = ({ projectId, open, handleClose }) => {
+  const { update: projectById, list: aliass } = useSelector(
+    (state) => state.project
+  );
 
-const Modal = ({ movieId, open, handleClose }) => {
-  const {
-    data: projectById,
-    isLoading,
-    error,
-  } = useRequest(() => projectAPI.getProjectAllById(movieId), {
-    isManual: false,
-    deps: [movieId],
-  });
+  const [categoryId, setCategoryId] = React.useState(1);
+  const user = JSON.parse(localStorage.getItem("user"));
+  const acce = user.accessToken;
+
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const creatorId = projectById.creator?.id;
+  
+
+  useEffect(() => {
+    dispatch(getProjectAllById({ projectId, acce }));
+    dispatch(getProjectCategory());
+  }, [projectId]);
   const {
     control,
     setValue,
@@ -37,42 +56,41 @@ const Modal = ({ movieId, open, handleClose }) => {
     formState: { errors },
   } = useForm({
     defaultValues: {
-      id: 0,
+      id: "",
       projectName: "",
-      creator: "",
+      creator: creatorId,
       description: "",
-      categoryId: 1,
+      categoryId: categoryId,
     },
     // Chế độ kích hoạt validation, mặc định là onSubmit
     mode: "onTouched",
   });
-  console.log(projectById)
+
   useEffect(() => {
     if (projectById) {
       Object.entries(projectById).forEach(([name, value]) =>
         setValue(name, value)
       );
+      setValue("creator", creatorId);
     }
   }, [setValue, projectById]);
 
-  const { data: handleRegister } = useRequest(
-    (values) => projectAPI.updateProjectById(values),
-    { isManual: true }
-  );
+  const handleChange = (evt) => {
+    const type = evt.target.value;
+    setValue("categoryId", type);
+  };
 
   const onSubmit = async (values) => {
     try {
-      // chờ cho action login thành công
-      await handleRegister(values);
-      // Chuyển user về trang home
+      const user = JSON.parse(localStorage.getItem("user"));
+      const acce = user.accessToken;
+      await dispatch(updateProjectById({ values, projectId, acce })).unwrap();
+      handleClose();
       Swal.fire({
         icon: "success",
         title: "Cập nhật thành công",
         buttons: "Ok",
       });
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
     } catch (error) {
       notification.error({
         message: "Cập nhật thất bại",
@@ -89,21 +107,11 @@ const Modal = ({ movieId, open, handleClose }) => {
         onClose={handleClose}
       >
         <DialogTitle style={{ fontWeight: 800 }}>Edit Project</DialogTitle>
-        <DialogContent>
-          <Form
-            onFinish={handleSubmit(onSubmit)}
-            labelCol={{ span: 2 }}
-            className="formRegister"
-          >
-            <Box
-              sx={{
-                "& .MuiTextField-root": { m: 1, width: "25ch" },
-              }}
-              noValidate
-              autoComplete="off"
-            >
-              <DialogContentText>Information Project</DialogContentText>
-              <div>
+        <DialogContent style={{ paddingBottom: 0 }}>
+          <Form onFinish={handleSubmit(onSubmit)} labelCol={{ span: 2 }}>
+            <DialogContentText>Information Project</DialogContentText>
+            <div>
+              <div className="mt-3" >
                 <Controller
                   name="id"
                   control={control}
@@ -117,36 +125,24 @@ const Modal = ({ movieId, open, handleClose }) => {
                       validateStatus={error ? "error" : ""}
                       help={error?.message}
                     >
-                      <TextField
-                        disabled
-                        id="outlined-disabled"
-                        label="Project Id"
-                        multiline
-                        maxRows={4}
-                        placeholder="Tài Khoản"
-                        {...register("id", {
-                          required: {
-                            value: true,
-                            message: "Tài khoản không được để trống",
-                          },
-                          minLength: {
-                            value: 5,
-                            message: "Tài khoản phải từ 5 đến 20 ký tự",
-                          },
-                          maxLength: {
-                            value: 20,
-                            message: "Tài khoản phải từ 5 đến 20 ký tự",
-                          },
-                        })}
-                        {...field}
-                        // defaultValue={projectById?.id}
-                        // onChange={handleTextInputChange}
-                        // onChange={handleChange}
-                      />
+                      <FormControl variant="filled" sx={{ minWidth: 250 }}>
+                        <TextField
+                          style={{ cursor: "not-allowed" }}
+                          disabled
+                          id="outlined-disabled"
+                          label="Project Id"
+                          multiline
+                          maxRows={4}
+                          placeholder="Tài Khoản"
+                          {...field}
+                        />
+                      </FormControl>
                       {errors.id && <p>{errors.id.message}</p>}
                     </Form.Item>
                   )}
                 />
+              </div>
+              <div className="mt-3">
                 <Controller
                   name="projectName"
                   control={control}
@@ -161,23 +157,26 @@ const Modal = ({ movieId, open, handleClose }) => {
                       help={error?.message}
                     >
                       <TextField
-                        id="outlined-multiline-flexible"
+                        id="outlined-disabled"
                         label="Project name"
                         multiline
                         maxRows={4}
+                        fullWidth
                         {...field}
-                        // onChange={handleTextInputChange}
-                        // onChange={handleChange}
                       />
                     </Form.Item>
                   )}
                 />
+              </div>
+
+              <div className="mt-2">
                 <Controller
-                  name="creator"
+                  name="categoryId"
                   control={control}
                   rules={{
                     required: {
                       value: true,
+                      message: "Category Id không được để trống",
                     },
                   }}
                   render={({ field, fieldState: { error } }) => (
@@ -185,26 +184,40 @@ const Modal = ({ movieId, open, handleClose }) => {
                       validateStatus={error ? "error" : ""}
                       help={error?.message}
                     >
-                      <TextField
-                        {...register("creator", {
-                          required: {
-                            value: true,
-                            message: "Tài khoản không được để trống",
-                          },
-                        })}
-                        id="outlined-multiline-flexible"
-                        maxRows={4}
-                        label="Project Category"
-                        // onChange={handleTextInputChange}
-                        // onChange={handleChange}
-                        {...field}
-                      />
+                      <FormControl variant="filled" sx={{ minWidth: 250 }}>
+                        <InputLabel id="demo-simple-select-filled-label">
+                          Category
+                        </InputLabel>
+                        <Select
+                          labelId="demo-simple-select-filled-label"
+                          id="demo-simple-select-filled"
+                          value={categoryId}
+                          label="Category Id"
+                          onChange={handleChange}
+                          {...field}
+                        >
+                          {aliass?.map((alia) => {
+                            return (
+                              <MenuItem value={alia.id} key={alia.id}>
+                                {alia.projectCategoryName}
+                              </MenuItem>
+                            );
+                          })}
+                        </Select>
+                      </FormControl>
                     </Form.Item>
                   )}
                 />
               </div>
-              <button type="submit">Submit</button>
-            </Box>
+            </div>
+            <DialogActions>
+              <Button type="submit" variant="outlined" className="mt-2">
+                Submit
+              </Button>
+            </DialogActions>
+            {/* <Button type="submit" variant="outlined" className="mt-4">
+              Submit
+            </Button> */}
           </Form>
         </DialogContent>
         <DialogActions>

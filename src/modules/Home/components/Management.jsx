@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { DataGrid, GridColDef, GridValueGetterParams } from "@mui/x-data-grid";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -7,6 +7,7 @@ import {
   faBars,
   faMagnifyingGlass,
   faPlus,
+  faCircleUser,
 } from "@fortawesome/free-solid-svg-icons";
 import SCSS from "../css/style.module.scss";
 import * as images from "../images";
@@ -23,14 +24,39 @@ import InforUser from "./InforUser";
 
 import { Popover, Text, Button } from "@mantine/core";
 
-import { useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate, Navigate } from "react-router-dom";
 
+import {
+  assignUserProject,
+  getProjectAll,
+} from "modules/ProjectDetail/slices/projectSlices";
+
+import { logout } from "modules/Authentication/slices/authSlice";
+
+import {
+  changeSearch,
+  searchUser,
+} from "modules/ProjectDetail/slices/userSlices";
+// import { searchUser } from "modules/ProjectDetail/slices/userSlices";
 const Management = () => {
+  const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [id, setid] = React.useState("");
+  const [isFetching, setIsFetching] = React.useState(false);
   const [open, setOpen] = React.useState(false);
   const [sidebarOpen, setSideBarOpen] = useState(false);
-  const [movieId, setMovieId] = React.useState(7576);
+  const [projectId, setProjectId] = React.useState(8626);
+
+  const user = JSON.parse(localStorage.getItem("user"));
+
+  const { data: projects, listuser: users } = useSelector(
+    (state) => state.project
+  );
+  const { searchUser: adu } = useSelector((state) => state.user);
+
+  useEffect(() => {
+    dispatch(getProjectAll());
+  }, []);
 
   const {
     data: movies,
@@ -60,11 +86,6 @@ const Management = () => {
     setSideBarOpen(!sidebarOpen);
   };
 
-  const { data: handleAddUser } = useRequest(
-    (info) => projectAPI.addUserForProject(info),
-    { isManual: true }
-  );
-
   const { data: handleDeleteProject } = useRequest(
     (id) => projectAPI.deleteProject(id),
     { isManual: true }
@@ -91,26 +112,31 @@ const Management = () => {
     }
   };
 
-  const handleGetMovieId = (id) => {
+  const handleGetProductId = (id) => {
     setOpen(true);
-    setMovieId(id);
+    setProjectId(id);
+  };
+
+  const handleLogout = () => {
+    dispatch(logout());
+    navigate("/login");
   };
 
   const submitAddUser = async (idUser, projectId) => {
+    const user = JSON.parse(localStorage.getItem("user"));
+    const acces = user.accessToken;
     const info = {
       projectId: projectId,
       userId: idUser,
     };
     try {
-      await handleAddUser(info);
+      await dispatch(assignUserProject({ info, acces })).unwrap();
+      // await handleAddUser(info);
       Swal.fire({
         icon: "success",
         title: "Thêm thành viên thành công",
         buttons: "Ok",
       });
-      setTimeout(() => {
-        window.location.reload();
-      }, 2000);
     } catch (error) {
       Swal.fire({
         text: error,
@@ -123,10 +149,22 @@ const Management = () => {
 
   const { data: infoUser1 } = useRequest(() => userAPI.getAllUser());
 
+  const handleSearch = (evt) => {
+    setIsFetching(true);
+    const user = JSON.parse(localStorage.getItem("user"));
+    const acce = user.accessToken;
+    if (evt.key !== "Enter") return;
+
+    const { value } = evt.target;
+    dispatch(searchUser({ value, acce }));
+  };
   const handleMovieShowing = (projectId) => {
     navigate(`/projectDetail/${projectId}`);
   };
 
+  if (!user) {
+    return <Navigate to="/login" />;
+  }
   return (
     <div className={SCSS.containerManagement}>
       <div className={sidebarClass}>
@@ -216,11 +254,51 @@ const Management = () => {
               <Link to="/createProject">Create project</Link>
             </Text>
           </div>
+          <div>
+            <FontAwesomeIcon
+              className="iconUser"
+              icon={faGear}
+              color="#9e9e9e"
+            />
+            <Text
+              component="span"
+              align="center"
+              variant="gradient"
+              gradient={{ from: "indigo", to: "cyan", deg: 45 }}
+              size="16"
+              weight={700}
+              style={{ fontFamily: "Greycliff CF, sans-serif" }}
+            >
+              <Link to="/user">User Management</Link>
+            </Text>
+          </div>
         </div>
       </div>
       <div className={SCSS.projectManagement}>
         <div className={SCSS.containerProjectManagement}>
-          <h4>Project management</h4>
+          <div className="d-flex justify-content-between">
+            <div>
+              <h4>Project management</h4>
+            </div>
+            {user ? (
+              <div className={SCSS.infoUser}>
+                <div className={SCSS.inforUserName}>
+                  <span>
+                    <FontAwesomeIcon
+                      className="iconUser"
+                      icon={faCircleUser}
+                      color="#9e9e9e"
+                    />
+                  </span>
+                  <h3>{user.name}</h3>
+                </div>
+                <div>
+                  <Button onClick={handleLogout}>Logout</Button>
+                </div>
+              </div>
+            ) : null}
+          </div>
+
           <table className="table">
             <thead>
               <tr>
@@ -233,7 +311,7 @@ const Management = () => {
               </tr>
             </thead>
             <tbody>
-              {movies?.map((product) => (
+              {projects?.map((product) => (
                 <tr key={product.id}>
                   <td>{product.id}</td>
                   <td>{product.projectName}</td>
@@ -260,7 +338,7 @@ const Management = () => {
                       styles={{}}
                     >
                       <Popover.Target>
-                        <Button>
+                        <Button type="submit">
                           <FontAwesomeIcon
                             className="iconUser"
                             icon={faPlus}
@@ -273,38 +351,58 @@ const Management = () => {
                           <Text size="sm">Add User</Text>
                         </div>
                         <div className={SCSS.containerAddUser}>
-                          {infoUser1?.map((i) => {
-                            return (
-                              <div key={i.userId}>
-                                <p
-                                  onClick={() =>
-                                    submitAddUser(i.userId, product.id)
-                                  }
-                                >
-                                  {i.name}
-                                </p>
-                              </div>
-                            );
-                          })}
+                          <div className={SCSS.containerSearch}>
+                            <input
+                              type="text"
+                              className="form-control"
+                              placeholder="Search your todo"
+                              onKeyDown={handleSearch}
+                            />
+                          </div>
+
+                          {isFetching
+                            ? adu?.map((i) => {
+                                return (
+                                  <div key={i.userId}>
+                                    <p
+                                      onClick={() =>
+                                        submitAddUser(i.userId, product.id)
+                                      }
+                                    >
+                                      {i.name}
+                                    </p>
+                                  </div>
+                                );
+                              })
+                            : infoUser1?.map((i) => {
+                                return (
+                                  <div key={i.userId}>
+                                    <p
+                                      onClick={() =>
+                                        submitAddUser(i.userId, product.id)
+                                      }
+                                    >
+                                      {i.name}
+                                    </p>
+                                  </div>
+                                );
+                              })}
                         </div>
                       </Popover.Dropdown>
                     </Popover>
-                    {/* {product.members.map((i, index) => {
-                    //   return <span key={index}>{i.name}</span>;
-                    // })} */}
                   </td>
                   <td>
                     <div className={SCSS.projectManagementButton}>
                       <button
                         type="button"
-                        class="btn btn-primary me-2"
+                        className="btn btn-primary me-2"
                         onClick={() => handleMovieShowing(product.id)}
                       >
                         Detail
                       </button>
                       <button
                         className="btn btn-success me-2"
-                        onClick={() => handleGetMovieId(product.id)}
+                        onClick={() => handleGetProductId(product.id)}
                       >
                         Update
                       </button>
@@ -320,7 +418,7 @@ const Management = () => {
               ))}
             </tbody>
           </table>
-          {/* <Modal handleClose={handleClose} open={open} movieId={movieId} /> */}
+          <Modal handleClose={handleClose} open={open} projectId={projectId} />
         </div>
       </div>
     </div>

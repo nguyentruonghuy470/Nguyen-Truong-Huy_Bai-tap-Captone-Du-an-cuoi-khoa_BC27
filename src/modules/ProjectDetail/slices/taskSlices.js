@@ -12,65 +12,53 @@ const initialState = {
   comment: [],
 };
 
-// export const getProjectDetails = createAsyncThunk(
-//   "task/getProjectDetails",
-//   async (title, { rejectWithValue }) => {
-//     try {
-//       const data = await taskAPI.getProjectDetail(title.taskId, title.acces);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
+export const getProjectAllById = createAsyncThunk(
+  "task/getProjectAllById",
+  async (title, { rejectWithValue }) => {
+    try {
+      const data = await projectAPI.getProjectAllById(title.projectId);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
-// export const createTask = createAsyncThunk(
-//   "task/createTask",
-//   async (title, { rejectWithValue }) => {
-//     try {
-//       const data = await taskAPI.createTask(title.values, title.acce);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
+export const getStatus = createAsyncThunk(
+  "task/getStatus",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await projectAPI.getStatus();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
-// export const getAll = createAsyncThunk(
-//   "task/getAll",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const data = await taskAPI.getAll();
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
+export const getAllpri = createAsyncThunk(
+  "task/getAllpri",
+  async (projectId, { rejectWithValue }) => {
+    try {
+      const data = await projectAPI.getPriority(projectId);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
-// export const getAllpri = createAsyncThunk(
-//   "task/getAllpri",
-//   async (projectId, { rejectWithValue }) => {
-//     try {
-//       const data = await taskAPI.getAllpri(projectId);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
-
-// export const getAlltas = createAsyncThunk(
-//   "task/getAlltas",
-//   async (_, { rejectWithValue }) => {
-//     try {
-//       const data = await taskAPI.getAlltas();
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
+export const getAlltas = createAsyncThunk(
+  "task/getAlltas",
+  async (_, { rejectWithValue }) => {
+    try {
+      const data = await projectAPI.getTaskType();
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 // export const removeTask = createAsyncThunk(
 //   "task/removetask",
@@ -86,29 +74,31 @@ const initialState = {
 //   }
 // );
 
-// export const getTaskDetail = createAsyncThunk(
-//   "task/getTaskDetail",
-//   async (title, { rejectWithValue }) => {
-//     try {
-//       const data = await taskAPI.getTaskDetail(title.taskId, title.acce);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
+export const getTaskDetail = createAsyncThunk(
+  "task/getTaskDetail",
+  async (title, { rejectWithValue }) => {
+    try {
+      const data = await projectAPI.getTaskDetail(title.taskId, title.acce);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
-// export const updateTasks = createAsyncThunk(
-//   "task/updateTasks",
-//   async (title, { rejectWithValue }) => {
-//     try {
-//       const data = await taskAPI.updateTasks(title.values, title.acces);
-//       return data;
-//     } catch (error) {
-//       return rejectWithValue(error);
-//     }
-//   }
-// );
+export const updateTasks = createAsyncThunk(
+  "task/updateTasks",
+  async (title, { rejectWithValue }) => {
+    console.log(title.values);
+    try {
+      const data = await projectAPI.updateTasks(title.values, title.acces);
+      console.log(data);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 export const getAllComment = createAsyncThunk(
   "task/getAllComment",
@@ -172,65 +162,65 @@ const taskSlices = createSlice({
   initialState,
   reducers: {},
   extraReducers: (builder) => {
-    // builder.addCase(getProjectDetails.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(getProjectDetails.fulfilled, (state, { payload }) => {
-    //   state.data1 = payload;
-    //   state.isLoading = false;
-    // });
-    // builder.addCase(getProjectDetails.rejected, (state, { payload }) => {
-    //   state.error = payload;
-    //   state.isLoading = false;
-    // });
+    builder.addCase(getProjectAllById.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getProjectAllById.fulfilled, (state, { payload }) => {
+      state.data1 = payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getProjectAllById.rejected, (state, { payload }) => {
+      state.error = payload;
+      state.isLoading = false;
+    });
 
-    // builder.addCase(getAll.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(getAll.fulfilled, (state, { payload }) => {
-    //   state.getall = payload;
-    //   state.isLoading = false;
-    // });
-    // builder.addCase(getAll.rejected, (state, { payload }) => {
-    //   state.error = payload;
-    //   state.isLoading = false;
-    // });
+    builder.addCase(getStatus.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getStatus.fulfilled, (state, { payload }) => {
+      state.getall = payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getStatus.rejected, (state, { payload }) => {
+      state.error = payload;
+      state.isLoading = false;
+    });
 
-    // builder.addCase(getAllpri.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(getAllpri.fulfilled, (state, { payload }) => {
-    //   state.getallpri = payload;
-    //   state.isLoading = false;
-    // });
-    // builder.addCase(getAllpri.rejected, (state, { payload }) => {
-    //   state.error = payload;
-    //   state.isLoading = false;
-    // });
+    builder.addCase(getAllpri.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getAllpri.fulfilled, (state, { payload }) => {
+      state.getallpri = payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getAllpri.rejected, (state, { payload }) => {
+      state.error = payload;
+      state.isLoading = false;
+    });
 
-    // builder.addCase(getAlltas.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(getAlltas.fulfilled, (state, { payload }) => {
-    //   state.getalltas = payload;
-    //   state.isLoading = false;
-    // });
-    // builder.addCase(getAlltas.rejected, (state, { payload }) => {
-    //   state.error = payload;
-    //   state.isLoading = false;
-    // });
+    builder.addCase(getAlltas.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getAlltas.fulfilled, (state, { payload }) => {
+      state.getalltas = payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getAlltas.rejected, (state, { payload }) => {
+      state.error = payload;
+      state.isLoading = false;
+    });
 
-    // builder.addCase(getTaskDetail.pending, (state) => {
-    //   state.isLoading = true;
-    // });
-    // builder.addCase(getTaskDetail.fulfilled, (state, { payload }) => {
-    //   state.updatetask = payload;
-    //   state.isLoading = false;
-    // });
-    // builder.addCase(getTaskDetail.rejected, (state, { payload }) => {
-    //   state.error = payload;
-    //   state.isLoading = false;
-    // });
+    builder.addCase(getTaskDetail.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(getTaskDetail.fulfilled, (state, { payload }) => {
+      state.updatetask = payload;
+      state.isLoading = false;
+    });
+    builder.addCase(getTaskDetail.rejected, (state, { payload }) => {
+      state.error = payload;
+      state.isLoading = false;
+    });
 
     builder.addCase(getAllComment.pending, (state) => {
       state.isLoading = true;

@@ -20,7 +20,7 @@ const CommentForm = ({
   initialText = "",
 }) => {
   const [text, setText] = useState(initialText);
-  console.log(text);
+
   const {
     handleSubmit,
     formState: { errors },

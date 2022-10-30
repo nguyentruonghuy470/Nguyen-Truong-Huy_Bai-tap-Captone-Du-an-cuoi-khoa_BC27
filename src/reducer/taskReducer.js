@@ -9,8 +9,8 @@ const taskReducer = (state = initialState, action) => {
   switch (action.type) {
     case "location":
       return { ...state, dataTaskDetail: action.cinemaCode };
-    case "movieList":
-      return { ...state, moviesList: action.cinemaName };
+    case "getTaskId":
+      return { ...state, taskId: action.idTask };
     case "booking":
       const check = state.bookingList.findIndex(
         (chair) => chair.tenGhe === action.isBooking.tenGhe

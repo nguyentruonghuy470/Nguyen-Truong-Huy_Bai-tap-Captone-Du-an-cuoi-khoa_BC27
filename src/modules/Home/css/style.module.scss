@@ -1,6 +1,6 @@
 .containerManagement {
+  // height: 100vh;
   display: flex;
-  height: 100;
   position: relative;
   .iconUser {
     display: flex;
@@ -126,6 +126,9 @@
             margin: 0;
           }
         }
+        .containerSearch {
+          margin: 8px 10px 5px 10px;
+        }
       }
       .projectManagementButton {
         display: flex;
@@ -140,7 +143,6 @@
   width: 20%;
   height: 100%;
 }
-
 .sidebar {
   width: 78px;
   background: #11101d;
@@ -202,5 +204,20 @@
     display: flex;
     flex-direction: column;
     gap: 20px;
+  }
+}
+.infoUser {
+  display: flex;
+  margin-right: 10px;
+  .inforUserName {
+    display: flex;
+    span {
+      font-size: 23px;
+      margin-right: 10px;
+    }
+    h3 {
+      margin-bottom: 0;
+      margin-right: 10px;
+    }
   }
 }

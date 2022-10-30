@@ -51,7 +51,6 @@ const Createtask = () => {
 
   const { data: dataPriority } = useRequest(() => projectAPI.getPriority());
 
-  const { data: infoUser1 } = useRequest(() => userAPI.getAllUser());
 
   const handleChange = (event) => {
     let value = event.target.value;
@@ -64,6 +63,7 @@ const Createtask = () => {
     });
   };
 
+  console.log(typeof variantName);
   const { control, setValue, register, handleSubmit } = useForm({
     defaultValues: {
       listUserAsign: [],
@@ -80,34 +80,9 @@ const Createtask = () => {
     // Chế độ kích hoạt validation, mặc định là onSubmit
     mode: "onTouched",
   });
-  const { data: handleRegister } = useRequest(
-    (values) => projectAPI.createTask(values),
-    { isManual: true }
-  );
-  const onSubmit = async (values) => {
-    console.log(values);
-    try {
-      // chờ cho action login thành công
-      await handleRegister(values);
-      // Chuyển user về trang home
-      // navigate("/");
-
-      Swal.fire({
-        icon: "success",
-        title: "Thêm thành công",
-        buttons: "Ok",
-      });
-    } catch (error) {
-      notification.error({
-        message: "Thêm thất bại",
-        description: error,
-      });
-    }
+  const handleChange4 = (evt) => {
+    setValue("listUserAsign", evt);
   };
-
-  // const handleChangeUser = (event) => {
-  //   setState({ ...state, [event.target.name]: event.target.value });
-  // };
   const handleChangeUser = (event) => {
     const {
       target: { value },
@@ -147,6 +122,30 @@ const Createtask = () => {
     });
 
     setVariantName(duplicateRemoved);
+  };
+
+  const { data: handleRegister } = useRequest(
+    (values) => projectAPI.createTask(values),
+    { isManual: true }
+  );
+  const onSubmit = async (values) => {
+    console.log(values);
+    try {
+      // chờ cho action login thành công
+      await handleRegister(values);
+      // Chuyển user về trang home
+      navigate("/");
+      Swal.fire({
+        icon: "success",
+        title: "Thêm thành công",
+        buttons: "Ok",
+      });
+    } catch (error) {
+      notification.error({
+        message: "Thêm thất bại",
+        description: error,
+      });
+    }
   };
 
   return (
@@ -333,7 +332,44 @@ const Createtask = () => {
               )}
             />
           </div>
-
+          <div className={SCSS.time}>
+            <div>
+              <h6>Original Estimete</h6>
+              <input
+                type="text"
+                {...register("originalEstimate", {
+                  required: {
+                    value: true,
+                    message: "không được để trống",
+                  },
+                })}
+              />
+            </div>
+            <div>
+              <h6>Time Spent</h6>
+              <input
+                type="text"
+                {...register("timeTrackingSpent", {
+                  required: {
+                    value: true,
+                    message: "không được để trống",
+                  },
+                })}
+              />
+            </div>
+            <div>
+              <h6>Time remaining</h6>
+              <input
+                type="text"
+                {...register("timeTrackingRemaining", {
+                  required: {
+                    value: true,
+                    message: "không được để trống",
+                  },
+                })}
+              />
+            </div>
+          </div>
           <Controller
             name="description"
             control={control}
@@ -352,41 +388,6 @@ const Createtask = () => {
               </Form.Item>
             )}
           />
-
-          {/* <Controller
-            name="listUserAsign"
-            control={control}
-            render={({ field, fieldState: { error } }) => (
-              <Form.Item
-                validateStatus={error ? "error" : ""}
-                help={error?.message}
-              >
-                <FormControl sx={{ minWidth: 250 }}>
-                  <InputLabel htmlFor="age-native-simple">
-                    Names here to select from
-                  </InputLabel>
-                  <Select
-                    labelId="demo-mutiple-checkbox-label"
-                    id="demo-mutiple-checkbox"
-                    multiple
-                    value={variantName}
-                    onChange={handleChangeUser}
-                    renderValue={(selected) =>
-                      selected.map((x) => x.name).join(", ")
-                    }
-                    input={<OutlinedInput label="Tag" />}
-                  >
-                    {infoUser1?.map((name) => (
-                      <MenuItem key={name.userId} value={name}>
-                        <Checkbox checked={variantName.indexOf(name) > -1} />
-                        <ListItemText primary={name.name} />
-                      </MenuItem>
-                    ))}
-                  </Select>
-                </FormControl>
-              </Form.Item>
-            )}
-          /> */}
         </div>
         <Button type="submit" variant="outlined" className="mt-4">
           Create project

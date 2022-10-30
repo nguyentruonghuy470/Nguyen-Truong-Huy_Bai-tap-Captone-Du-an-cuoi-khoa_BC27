@@ -5,6 +5,8 @@ const initialState = {
   isLoading: null,
   error: "",
   detaisUser: {},
+  search: "",
+  searchUser: [],
 };
 export const getAllUser = createAsyncThunk(
   "project/getAllUser",
@@ -22,8 +24,8 @@ export const CreateUsers = createAsyncThunk(
   async (values, { rejectWithValue, dispatch }) => {
     try {
       const data = await userAPI.createUserApi(values);
-      // dispatch(getAllUser())
-      // return data;
+      dispatch(getAllUser());
+      return data;
     } catch (error) {
       return rejectWithValue(error);
     }
@@ -54,6 +56,18 @@ export const updateUser = createAsyncThunk(
     }
   }
 );
+export const searchUser = createAsyncThunk(
+  "user/searchUser",
+  async (title, { rejectWithValue, dispatch }) => {
+    console.log(title);
+    try {
+      const data = await userAPI.searchUser(title.value, title.acce);
+      return data;
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  }
+);
 
 const userSlices = createSlice({
   name: "user",
@@ -75,7 +89,20 @@ const userSlices = createSlice({
       state.error = payload;
       state.isLoading = false;
     });
+
+    
+    builder.addCase(searchUser.pending, (state) => {
+      state.isLoading = true;
+    });
+    builder.addCase(searchUser.fulfilled, (state, { payload }) => {
+      state.searchUser = payload;
+      state.isLoading = false;
+    });
+    builder.addCase(searchUser.rejected, (state, { payload }) => {
+      state.error = payload;
+      state.isLoading = false;
+    });
   },
 });
-export const { getdetailUser } = userSlices.actions;
+export const { getdetailUser, changeSearch } = userSlices.actions;
 export default userSlices.reducer;

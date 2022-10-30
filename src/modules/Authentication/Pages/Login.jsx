@@ -39,10 +39,13 @@ const Login = () => {
 
   const navigate = useNavigate();
   const dispatch = useDispatch();
+
+  const handleClick = () => {
+    navigate("/register");
+  };
   const { user, isLoading } = useSelector((state) => state.auth);
 
   const onSubmit = async (values) => {
-    
     try {
       // chờ cho action login thành công
       await dispatch(login(values)).unwrap();
@@ -185,7 +188,7 @@ const Login = () => {
           </div>
           <div className="mt-3">
             <Text
-              href="/login"
+              onClick={handleClick}
               component="a"
               align="center"
               size="md"
